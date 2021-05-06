@@ -53,8 +53,7 @@ const app = new Vue({
             axios.get(`/login?username=${this.user.username}&password=${this.user.password}`)
             .then(res => {
                 if(res.data.code == 0) {
-                    this.user.status = 1
-                    Object.assign(this.user, res.data.data)
+                    this.user = res.data.data
                     this.user2 = JSON.parse(JSON.stringify(this.user))
                     window.localStorage.setItem('user', JSON.stringify(this.user))
                     this.redirectTo('/home')

@@ -19,7 +19,7 @@ module.exports = [
                  JSON.stringify({
                     code: auth ? 0 : -1,
                     msg:  auth ? '登录成功' : '登录失败,  账号或密码不正确',
-                    data: auth ? require('./data/user.js') : {}
+                    data: auth ? user : {}
                 })
             )
             res.end()
