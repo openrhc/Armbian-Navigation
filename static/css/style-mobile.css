@@ -1,0 +1,59 @@
+@media screen and (max-width: 768px) {
+    .nav{
+        padding: 12px 16px;
+    }
+    .nav-logo{
+        width: 32px;
+        height: 32px;
+    }
+    .nav-title{
+        display: none;
+    }
+    .nav-list{
+        margin: 0;
+    }
+
+    .nav-list > li > a {
+        font-size: 16px;
+    }
+
+    .user{
+        margin-right: 4px;
+    }
+    .user .user-login, .user .user-username{
+        font-size: 16px;
+    }
+    .user .user-avatar{
+        width: 32px;
+        height: 32px;
+        margin-left: 4px;
+    }
+    .home ul li > a{
+        margin: 4px;
+        min-width: 100px;
+    }
+    .home ul li .icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .home ul li .title{
+        font-size: 14px;
+        padding: 4px 0;
+    }
+    .home ul li .desp{
+        font-size: 12px;
+    }
+    .home .home-edit .form{
+        padding: 8px 16px;
+        min-width: 70%;
+    }
+    .home .home-edit .form input {
+        margin: 4px 0;
+    }
+    .system,
+    .profile,
+    .login{
+        max-width: 100%;
+    }
+}

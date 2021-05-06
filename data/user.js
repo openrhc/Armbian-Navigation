@@ -1,0 +1,1 @@
+module.exports = {"status":1,"username":"admin","password":"admin","nickname":"个人中心","avatar":"img/avatar.jpg"}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favico-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="img/favico-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favico-16x16.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style-mobile.css">
+</head>
+<body>
+    <!-- <script src="js/vue.min.js"></script>
+    <script src="js/axios.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <div id="loading">
+        <p>Loading...</p>
+    </div>
+    <div id="app" style="visibility: hidden;">
+        <!-- 导航 -->
+        <div class="nav">
+            <a class="nav-logo" href="#/home">
+                <img src="img/favico-96x96.png" :alt="config.title">
+            </a>
+            <h2 class="nav-title">
+                {{ config.title }}
+            </h2>
+            <ul class="nav-list">
+                <li>
+                    <a href="#/home">首页</a>
+                </li>
+                <li>
+                    <a href="#/system">系统</a>
+                </li>
+            </ul>
+            <div class="user">
+                <a @click="checkUserView" class="user-username">
+                    {{ user.nickname }}
+                </a>
+                <div @click="checkUserView" class="user-avatar">
+                    <img :src="user.avatar" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- 路由布局 -->
+        <div class="route">
+            <!-- 主页 -->
+            <div class="home" v-if="route.startsWith('/home')">
+                <div v-if="urls.length == 0" class="empty">
+                    <p>您似乎还没有添加过导航，点击右侧按钮添加一个吧！</p>
+                </div>
+                <a class="add" :href="'#/home/edit?id=' + urls.length"></a>
+                <ul>
+                    <li v-for="url, index in urls">
+                        <a :target="url.url.startsWith('#') ? '' : '_blank'" :href="url.url">
+                            <img class="icon" :src="url.icon" alt="">
+                            <div class="title">{{ url.name }}</div>
+                            <div class="desp">{{ url.desp }}</div>
+                            <div class="action">
+                                <template v-if="user.status == 1">
+                                    <a class="url" :href="'#/home/del?id=' + index">删除</a>
+                                    <a class="url" :href="'#/home/edit?id=' + index">编辑</a>
+                                </template>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <div class="home-edit" v-if="route.startsWith('/home/edit')">
+                    <form class="form">
+                        <div class="head">
+                            <div class="title">编辑导航</div>
+                            <a href="#/home">
+                                <div class="close"></div>
+                            </a>
+                        </div>
+                        名称
+                        <input v-model="editor.name" type="text" placeholder="示例：路由器后台">
+                        描述
+                        <input v-model="editor.desp" type="text" placeholder="示例：登录路由器管理界面">
+                        URL
+                        <input v-model="editor.url" type="text" placeholder="示例：http://192.168.1.1/">
+                        图标
+                        <input v-model="editor.icon" type="text" placeholder="默认：img/icon-default.png">
+                        <div @click="checkEdit" class="save-edit">保 存</div>
+                    </form>
+                </div>
+                <div class="home-del" v-if="route.startsWith('/home/del')">
+                    <div class="alert">
+                        <div class="title">提示</div>
+                        <div class="msg">确定删除吗？</div>
+                        <div class="action">
+                            <a class="btn btn-cancel" href="#/home">取消</a>
+                            <div @click="delUrl" class="btn btn-yes">删除</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- 系统 -->
+            <div class="system" v-else-if="route == '/system'">
+                <div class="title">系统概述</div>
+                <table>
+                    <tr v-for="s in Object.keys(sys)">
+                        <td>{{ s }}</td>
+                        <td>{{ sys[s] }}</td>
+                    </tr>
+                </table>
+                <template v-if="user.status == 1">
+                    <div class="title">网站标题</div>
+                    <input v-model="config2.title" type="text">
+                    <div class="title">版权信息</div>
+                    <input v-model="config2.copyright" type="text">
+                    <div class="save" @click="setConfig">保 存</div>
+                </template>
+            </div>
+            <!-- 个人中心 -->
+            <div class="profile" v-else-if="route == '/profile'">
+                <div class="title">昵称</div>
+                <input v-model="user2.nickname" type="text">
+                <div class="title">头像</div>
+                <input v-model="user2.avatar" type="text">
+                <div class="title">用户名</div>
+                <input v-model="user2.username" type="text">
+                <div class="title">密码</div>
+                <input v-model="user2.password" type="password">
+                <div class="save" @click="updateUser">保 存</div>
+                <div class="logout" @click="userLogout">退出登录</div>
+            </div>
+            <div class="login" v-else-if="route == '/login'">
+                <div class="title">用户名</div>
+                <input type="text" v-model="user.username">
+                <div class="title">密码</div>
+                <input type="password" v-model="user.password">
+                <div @click="userLogin" class="login-submit">登 录</div>
+                <p v-if="!user.password">默认：admin admin</p>
+            </div>
+            <div class="not-found" v-else>
+                <p>
+                    抱歉，您访问的页面不存在！
+                    <a href="#/home"> 点击返回主页 </a>
+                </p>
+            </div>
+        </div>
+        <!-- 版权申明 -->
+        <div v-html="config.copyright" class="copyright"></div>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
