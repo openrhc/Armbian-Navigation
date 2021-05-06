@@ -1,6 +1,6 @@
 const fs = require('fs')
 const url = require('url')
-// test line
+
 const api = require('./api.js')
 
 // 常用mime
@@ -12,72 +12,69 @@ const mime = {
     css: 'text/css',
     js: 'text/javascript',
 }
-function getMimeType(file) {
-    let a = file.split('.')
-    return mime[a.pop()] || 'text/plain'
+function getMimeType(fileName) {
+    return mime[ fileName.split('.').pop() ] || mime.text
 }
 
 // 使用内存缓存文件
-let caches = {}
-function readFile(fileName, use_cache) {
-    if(caches.hasOwnProperty(fileName)) {
-        return caches[fileName]
+let fileCaches = {}
+function readFile(fileName, useCache) {
+    if(fileCaches.hasOwnProperty(fileName)) {
+        return fileCaches[fileName]
     }
     let content = fs.readFileSync(fileName)
-    if (false) {
-        caches[fileName] = content
+    if (useCache) {
+        fileCaches[fileName] = content
     }
     return content
 }
 
 function router(req, res) {
-    let url_obj = url.parse(req.url, true);
+    let urlObj = url.parse(req.url, true);
     
-    let pathName = url_obj.pathname
+    let pathName = urlObj.pathname
 
     // 处理已注册的路由
     for(let i = 0, len = api.length; i < len; i++) {
         if (new RegExp(api[i].url).test(pathName)) {
-            api[i].handler(req, res, url_obj.query)
+            api[i].handler(req, res, urlObj.query)
             return
         }
     }
 
     // 处理静态文件
-    pathName = pathName === '/' ? '/index.html': pathName
+    pathName = pathName === '/' ? '/index.html' : pathName
     
-    let file = './static' + pathName
-    let type = getMimeType(pathName)
+    let fileName = './static' + pathName
 
-    fs.exists(file, function(exists) {
+    fs.exists(fileName, function(exists) {
         if(!exists) {
             res.writeHeader(404, {
-                "Content-Type" : type
+                "Content-Type" : getMimeType(pathName)
             })
-            res.write('404')
-            res.end()
+            res.end('404')
             return
         }
-        let stat = fs.statSync(file)
+
         // 文件小于128K 才进行缓存
-        let use_cache = stat.size < 131072
+        let stat = fs.statSync(fileName)
+        let useCache = stat.size < 131072 // 128 * 1024
 
         // 请求路径为目录返回403页面
         if(stat.isDirectory()) {
             res.writeHeader(403, {
-                "Content-Type" : type
+                "Content-Type" : getMimeType(pathName)
             })
-            res.write('403')
-            res.end()
+            res.end('403')
             return
         }
+
         // 返回文件内容
         res.writeHeader(200, {
-            "Content-Type" : type
+            "Content-Type" : getMimeType(pathName)
         })
-        res.end(readFile(file, use_cache))
+        res.end(readFile(fileName, useCache))
     })
 }
-
 
 module.exports = router

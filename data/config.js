@@ -1,1 +1,1 @@
-module.exports = {"title":"Armbian","copyright":"©2021 OPENRHC 版权所有 <a target=\"_blank\" href=\"https://github.com/openrhc/Armbian-Navigation\">@项目地址</a> "}
+module.exports = {"title":"Armbian","copyright":"©2021 OPENRHC 版权所有 <a target=\"_blank\" href=\"https://github.com/openrhc/Armbian-Navigation\">@项目地址</a>"}

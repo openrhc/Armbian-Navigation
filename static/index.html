@@ -125,7 +125,7 @@
                 <input v-model="user2.username" type="text">
                 <div class="title">密码</div>
                 <input v-model="user2.password" type="password">
-                <div class="save" @click="updateUser">保 存</div>
+                <div class="save" @click="setUser">保 存</div>
                 <div class="logout" @click="userLogout">退出登录</div>
             </div>
             <div class="login" v-else-if="route == '/login'">

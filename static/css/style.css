@@ -294,6 +294,9 @@ a {
 .system table tr{
     background: #f8f8f8;
 }
+.system table tr > td:first-child{
+    white-space: nowrap;
+}
 .system table tr:nth-of-type(2n){
     background: #fff;
 }

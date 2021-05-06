@@ -5,8 +5,8 @@ const app = new Vue({
         route: '/home',
         // 网站配置
         config: {
-            title: 'Armbian服务器导航',
-            copyright: '©2021 版权所有'
+            title: 'Armbian-Navigation',
+            copyright: '©2021 OPENRHC 版权所有 <a target="_blank" href="https://github.com/openrhc/Armbian-Navigation">@项目地址</a>'
         },
         // 网站编辑框的值
         config2: {},
@@ -168,8 +168,12 @@ const app = new Vue({
                 alert('更新失败' + err)
             })
         },
-        updateUser() {
-            axios.post(`/updateUser?username=${this.user.username}&password=${this.user.password}`, this.user2)
+        setUser() {
+            if (!this.user2.username || !this.user2.password) {
+                alert('请填写 [用户名] [密码]')
+                return
+            }
+            axios.post(`/setUser?username=${this.user.username}&password=${this.user.password}`, this.user2)
             .then(res => {
                 if(res.data.code == 0) {
                     this.user = JSON.parse(JSON.stringify(this.user2))
