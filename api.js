@@ -131,7 +131,7 @@ const api = [
         })
 
         // 过滤网卡
-        let list = ['wlan', 'eth0']
+        let list = ['wlan', 'wlan0', 'eth', 'eth0']
         let ip = []
         const nws = os.networkInterfaces()
         for(let k in nws) {
