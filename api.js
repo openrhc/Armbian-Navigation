@@ -129,12 +129,24 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
+
+        // 过滤网卡
+        let list = ['wlan', 'eth0']
+        let ip = []
+        const nws = os.networkInterfaces()
+        for(let k in nws) {
+            if( list.includes(k.toLowerCase()) ) {
+                ip.push(nws[k][1].address)
+            }
+        }
         const data = {
             '主机名': os.hostname(),
             '内存': ((os.totalmem() - os.freemem()) / 1024 / 1024 / 1024).toFixed(2) + 'GB / ' + (os.totalmem() / 1024 / 1024 / 1024).toFixed(2) + 'GB',
+            'CPU': '(' + os.cpus().length + ') @ ' + (os.cpus()[0].speed / 1024).toFixed(2) + 'GHz',
             '版本': os.version(),
             '平台': os.type() + ' ' + os.arch(),
-            '负载': os.loadavg().join(' ')
+            '负载': os.loadavg().join(' '),
+            'IP': ip.join(' ')
         }
         res.end(
             JSON.stringify({
