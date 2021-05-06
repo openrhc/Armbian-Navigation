@@ -1,31 +1,31 @@
-const http = require('http')
+const http   = require('http')
 
 const router = require('./router.js')
+const tools  = require('./tools.js')
 
-// 请求次数统计
-let count = 0
-
-// 获取客户端IP
-function getClientIp(req) {
-    try{
-        return req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket.remoteAddress
-    }catch(err){
-        return 'Unknow IP'
-    }
-}
+const host   = '0.0.0.0'
+const port   = 80
+let   index  = 0
 
 const server = http.createServer(function(req, res) {
-    let ip = getClientIp(req)
-    console.log(`[${++count}] [${ip}]`, req.url)
+    let id   = tools.color('magenta', ++index)
+    let ip   = tools.color('green',   tools.getClientIp(req))
+    let time = tools.color('yellow',  tools.formatTime())
+    console.log(`[${id}] [${ip}] [${time}] `, req.url)
     router(req, res)
 })
 
-const host = '0.0.0.0'
-const port = 80
-
 server.listen(port, host, () => {
-    console.log(`Server running at http://${host}:${port}/`);
+    console.log(tools.color('green', `
+      _   _             _             _   _             
+     | \ | |           (_)           | | (_)            
+     |  \| | __ ___   ___  __ _  __ _| |_ _  ___  _ __  
+     | . · |/ _· \ \ / / |/ _· |/ _· | __| |/ _ \| '_ \ 
+     | |\  | (_| |\ V /| | (_| | (_| | |_| | (_) | | | |
+     |_| \_|\__,_| \_/ |_|\__, |\__,_|\__|_|\___/|_| |_|
+                           __/ |                        
+                          |___/                         
+     GitHub: https://github.com/openrhc/Armbian-Navigation
+    `))
+    console.log('Server running at', tools.color('green', `http://${host}:${port}/`))
 });

@@ -1,3 +1,22 @@
+/*
+ * 深拷贝
+ */
+function deepCopy(obj){
+    let objClone = Array.isArray(obj) ? [] : {}
+    if(obj && typeof obj === 'object'){
+        for(key in obj){
+            if(obj.hasOwnProperty(key)){
+                if(obj[key] && typeof obj[key] === 'object'){
+                    objClone[key] = deepCopy(obj[key]);
+                }else{
+                    objClone[key] = obj[key];
+                }
+            }
+        }
+    }
+    return objClone;
+} 
+
 const app = new Vue({
     el: '#app',
     data: {
@@ -9,7 +28,7 @@ const app = new Vue({
             copyright: '©2021 OPENRHC 版权所有 <a target="_blank" href="https://github.com/openrhc/Armbian-Navigation">@项目地址</a>'
         },
         // 网站编辑框的值
-        config2: {},
+        config_editor: {},
         // 用户状态
         user: {
             status: 0,
@@ -19,7 +38,7 @@ const app = new Vue({
             avatar: 'img/avatar-default.png'
         },
         // 个人信息框的值
-        user2:{},
+        user_editor:{},
         // 系统信息
         sys: {
             "主机名": "loading",
@@ -54,7 +73,7 @@ const app = new Vue({
             .then(res => {
                 if(res.data.code == 0) {
                     this.user = res.data.data
-                    this.user2 = JSON.parse(JSON.stringify(this.user))
+                    this.user_editor = deepCopy(this.user)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
                     this.redirectTo('/home')
                     console.log('登录成功')
@@ -74,7 +93,7 @@ const app = new Vue({
                 nickname: '未登录',
                 avatar: 'img/avatar-default.png'
             }
-            this.user2 = JSON.parse(JSON.stringify(this.user))
+            this.user_editor = deepCopy(this.user)
             console.log('退出登录')
             this.redirectTo('/login')
         },
@@ -144,7 +163,7 @@ const app = new Vue({
             .then(res => {
                  if(res.data.code == 0) {
                     this.config = res.data.data
-                    this.config2 = JSON.parse(JSON.stringify(this.config))
+                    this.config_editor = deepCopy(this.config)
                     window.localStorage.setItem('config', JSON.stringify(res.data.data))
                     return
                 }
@@ -154,10 +173,10 @@ const app = new Vue({
             })
         },
         setConfig() {
-            axios.post(`/setConfig?username=${this.user.username}&password=${this.user.password}`, this.config2)
+            axios.post(`/setConfig?username=${this.user.username}&password=${this.user.password}`, this.config_editor)
             .then(res => {
                 if(res.data.code == 0) {
-                    this.config = JSON.parse(JSON.stringify(this.config2))
+                    this.config = deepCopy(this.config_editor)
                     document.title = this.config.title
                     window.localStorage.setItem('config', JSON.stringify(this.config))
                     alert('更新成功')
@@ -169,14 +188,14 @@ const app = new Vue({
             })
         },
         setUser() {
-            if (!this.user2.username || !this.user2.password) {
+            if (!this.user_editor.username || !this.user_editor.password) {
                 alert('请填写 [用户名] [密码]')
                 return
             }
-            axios.post(`/setUser?username=${this.user.username}&password=${this.user.password}`, this.user2)
+            axios.post(`/setUser?username=${this.user.username}&password=${this.user.password}`, this.user_editor)
             .then(res => {
                 if(res.data.code == 0) {
-                    this.user = JSON.parse(JSON.stringify(this.user2))
+                    this.user = deepCopy(this.user_editor)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
                     alert('更新成功')
                     return
@@ -247,7 +266,7 @@ const app = new Vue({
         let config = window.localStorage.getItem('config')
         if (user) {
             this.user = JSON.parse(user)
-            this.user2 = JSON.parse(JSON.stringify(this.user))
+            this.user_editor = deepCopy(this.user)
         }
         if(urls) {
             this.urls = JSON.parse(urls)
@@ -255,7 +274,7 @@ const app = new Vue({
         if(config) {
             this.config = JSON.parse(config)
         }
-        this.config2 = JSON.parse(JSON.stringify(this.config))
+        this.config_editor = deepCopy(this.config)
         // 设置标题
         document.title = this.config.title
         this.updateView()

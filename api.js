@@ -1,12 +1,13 @@
-const fs = require('fs')
-const os = require('os')
+const fs   = require('fs')
+const os   = require('os')
 
-let urls = require('./data/urls.js')
-let user = require('./data/user.js')
+let urls   = require('./data/urls.js')
+let user   = require('./data/user.js')
 let config = require('./data/config.js')
 
 function checkLogin(query) {
-    return user.username === query.username && user.password === query.password
+    return user.username === query.username
+    && user.password === query.password
 }
 
 const api = [
@@ -24,7 +25,7 @@ const api = [
                 data: auth ? user : {}
             })
         )
-        console.table(query)
+        // console.table(query)
     }
 },
 {
@@ -41,7 +42,7 @@ const api = [
                 data: urls
             })
         )
-        console.table(urls)
+        // console.table(urls)
         // console.table({length: urls.length})
     }
 },
@@ -89,7 +90,7 @@ const api = [
                     msg: '保存成功'
                 })
             )
-            console.table(data)
+            // console.table(data)
         })
     }
 },
@@ -110,7 +111,7 @@ const api = [
             )
             return
         }
-        console.table(urls[query.id])
+        // console.table(urls[query.id])
         urls.splice(query.id, 1)
         fs.writeFileSync('./data/urls.js', 'module.exports = ' + JSON.stringify(urls))
         res.end(
@@ -142,7 +143,7 @@ const api = [
                 data: data
             })
         )
-        console.table(data)
+        // console.table(data)
     }
 },
 {
@@ -189,7 +190,7 @@ const api = [
                     msg: '保存成功'
                 })
             )
-            console.table(data)
+            // console.table(data)
         })
     }
 },
@@ -207,7 +208,7 @@ const api = [
                 data: config
             })
         )
-        console.table(config)
+        // console.table(config)
     }
 },
 {
@@ -254,7 +255,7 @@ const api = [
                     msg: '保存成功'
                 })
             )
-            console.table(data)
+            // console.table(data)
         })
     }
 },

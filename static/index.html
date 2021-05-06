@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading...</title>
     <link rel="icon" type="image/png" sizes="32x32" href="img/favico-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="img/favico-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favico-16x16.png">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/style-mobile.css">
 </head>
 <body>
     <!-- <script src="js/vue.min.js"></script>
@@ -109,25 +106,26 @@
                 </table>
                 <template v-if="user.status == 1">
                     <div class="title">网站标题</div>
-                    <input v-model="config2.title" type="text">
+                    <input v-model="config_editor.title" type="text">
                     <div class="title">版权信息</div>
-                    <input v-model="config2.copyright" type="text">
+                    <input v-model="config_editor.copyright" type="text">
                     <div class="save" @click="setConfig">保 存</div>
                 </template>
             </div>
             <!-- 个人中心 -->
             <div class="profile" v-else-if="route == '/profile'">
                 <div class="title">昵称</div>
-                <input v-model="user2.nickname" type="text">
+                <input v-model="user_editor.nickname" type="text">
                 <div class="title">头像</div>
-                <input v-model="user2.avatar" type="text">
+                <input v-model="user_editor.avatar" type="text">
                 <div class="title">用户名</div>
-                <input v-model="user2.username" type="text">
+                <input v-model="user_editor.username" type="text">
                 <div class="title">密码</div>
-                <input v-model="user2.password" type="password">
+                <input v-model="user_editor.password" type="password">
                 <div class="save" @click="setUser">保 存</div>
                 <div class="logout" @click="userLogout">退出登录</div>
             </div>
+            <!-- 用户登录 -->
             <div class="login" v-else-if="route == '/login'">
                 <div class="title">用户名</div>
                 <input type="text" v-model="user.username">
@@ -136,6 +134,7 @@
                 <div @click="userLogin" class="login-submit">登 录</div>
                 <p v-if="!user.password">默认：admin admin</p>
             </div>
+            <!-- 404 -->
             <div class="not-found" v-else>
                 <p>
                     抱歉，您访问的页面不存在！
