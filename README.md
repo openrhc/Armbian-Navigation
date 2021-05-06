@@ -48,7 +48,7 @@ node main.js
     ├── main.js
     ├── package.json
     ├── router.js
-    └── static             -- 静态资源文件
+    └── static            -- 静态资源文件
         ├── css
         ├── img
         │   └── icons     -- 导航图标

@@ -5,8 +5,21 @@ const router = require('./router.js')
 // 请求次数统计
 let count = 0
 
+// 获取客户端IP
+function getClientIp(req) {
+    try{
+        return req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket.remoteAddress
+    }catch(err){
+        return 'Unknow IP'
+    }
+}
+
 const server = http.createServer(function(req, res) {
-    console.log(`[${++count}]`, req.url)
+    let ip = getClientIp(req)
+    console.log(`[${++count}] [${ip}]`, req.url)
     router(req, res)
 })
 
