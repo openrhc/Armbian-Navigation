@@ -47,8 +47,11 @@ const app = new Vue({
             "平台": "loading",
             "负载": 'loading'
         },
-        // 导航列表
-        urls: [],
+        // 导航列表及类别
+        urls: {
+            urls: [],
+            category: []
+        },
         // 导航编辑框值
         editor: {
             id: 0,
@@ -56,7 +59,8 @@ const app = new Vue({
             name: '',
             desp: '',
             url: '',
-            icon: ''
+            icon: '',
+            category: '1'
         }
 
     },
@@ -103,8 +107,8 @@ const app = new Vue({
                 return
             }
             let id = this.editor.id
-            if (id == this.urls.length) {
-                this.editor.id = this.urls.length
+            if (id == this.urls.urls.length) {
+                this.editor.id = this.urls.urls.length
                 this.editor.icon = this.editor.icon || 'img/icon-default.png'
             }
             console.log('   check:', id)
@@ -235,24 +239,26 @@ const app = new Vue({
                 }
                 let id = this.route.replace('/home/edit?id=', '')
                 console.log('   edit:', id)
-                if (id == this.urls.length) {
+                if (id == this.urls.urls.length) {
                     this.editor = {
-                        id: this.urls.length,
+                        id: this.urls.urls.length,
                         icon: '',
                         name: '',
                         desp: '',
-                        url: '#/home/edit?id=' + this.urls.length,
-                        icon: ''
+                        url: '#/home/edit?id=' + this.urls.urls.length,
+                        icon: '',
+                        category: '1'
                     }
                     return
                 }
                 this.editor = {
                     id: id,
-                    icon: this.urls[id].icon,
-                    name: this.urls[id].name,
-                    desp: this.urls[id].desp,
-                    url: this.urls[id].url,
-                    icon: this.urls[id].icon
+                    icon: this.urls.urls[id].icon,
+                    name: this.urls.urls[id].name,
+                    desp: this.urls.urls[id].desp,
+                    url: this.urls.urls[id].url,
+                    icon: this.urls.urls[id].icon,
+                    category: this.urls.urls[id].category
                 }
             }
         }

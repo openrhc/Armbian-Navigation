@@ -78,7 +78,7 @@ const api = [
                 console.log(e)
                 return
             }
-            urls[data.id] = data
+            urls.urls[data.id] = data
             fs.writeFileSync('./data/urls.js', 'module.exports = ' + JSON.stringify(urls))
             
             res.end(
@@ -109,7 +109,7 @@ const api = [
             return
         }
         // console.table(urls[query.id])
-        urls.splice(query.id, 1)
+        urls.urls.splice(query.id, 1)
         fs.writeFileSync('./data/urls.js', 'module.exports = ' + JSON.stringify(urls))
         res.end(
             JSON.stringify({

@@ -87,7 +87,7 @@ function readFile(fileName, useCache) {
         return fileCaches[fileName]
     }
     let content = fs.readFileSync(fileName)
-    if (useCache) {
+    if (false) {
         fileCaches[fileName] = content
     }
     return content

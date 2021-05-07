@@ -108,6 +108,14 @@ a {
     background-color: #fff;
     background-size:  60% 60%;
 }
+.home .cell{
+
+}
+.home .cell > .title{
+    padding: 16px;
+    font-weight: bold;
+    font-size: 16px;
+}
 .home ul{
     display: flex;
     flex-wrap: wrap;
@@ -199,7 +207,9 @@ a {
     background-size: 100% 100%;
     /*border: 1px dashed #000;*/
 }
-.home .home-edit .form input{
+.home .home-edit .form input,
+.home .home-edit .form select{
+    font-size: 14px;
     margin: 16px 0;
     width: 100%;
     line-height: 32px;

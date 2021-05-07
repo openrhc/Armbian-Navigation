@@ -43,25 +43,28 @@
         <div class="route">
             <!-- 主页 -->
             <div class="home" v-if="route.startsWith('/home')">
-                <div v-if="urls.length == 0" class="empty">
+                <div v-if="urls.urls.length == 0" class="empty">
                     <p>您似乎还没有添加过导航，点击右侧按钮添加一个吧！</p>
                 </div>
-                <a class="add" :href="'#/home/edit?id=' + urls.length"></a>
-                <ul>
-                    <li v-for="url, index in urls">
-                        <a :target="url.url.startsWith('#') ? '' : '_blank'" :href="url.url">
-                            <img class="icon" :src="url.icon" alt="">
-                            <div class="title">{{ url.name }}</div>
-                            <div class="desp">{{ url.desp }}</div>
-                            <div class="action">
-                                <template v-if="user.status == 1">
-                                    <a class="url" :href="'#/home/del?id=' + index">删除</a>
-                                    <a class="url" :href="'#/home/edit?id=' + index">编辑</a>
-                                </template>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
+                <a class="add" :href="'#/home/edit?id=' + urls.urls.length"></a>
+                <div v-for="c in urls.category" class="cell" v-if="urls.urls.length != 0">
+                    <div class="title">{{ c.name }}</div>
+                    <ul>
+                        <li v-for="url, index in urls.urls" v-if="url.category == c.id">
+                            <a :target="url.url.startsWith('#') ? '' : '_blank'" :href="url.url">
+                                <img class="icon" :src="url.icon" alt="">
+                                <div class="title">{{ url.name }}</div>
+                                <div class="desp">{{ url.desp }}</div>
+                                <div class="action">
+                                    <template v-if="user.status == 1">
+                                        <a class="url" :href="'#/home/del?id=' + index">删除</a>
+                                        <a class="url" :href="'#/home/edit?id=' + index">编辑</a>
+                                    </template>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="home-edit" v-if="route.startsWith('/home/edit')">
                     <form class="form">
                         <div class="head">
@@ -78,6 +81,12 @@
                         <input v-model="editor.url" type="text" placeholder="示例：http://192.168.1.1/">
                         图标
                         <input v-model="editor.icon" type="text" placeholder="默认：img/icon-default.png">
+                        类别
+                        <select v-model="editor.category">
+                            <option v-for="c in urls.category" :value="c.id">
+                                {{ c.name }}
+                            </option>
+                        </select>
                         <div @click="checkEdit" class="save-edit">保 存</div>
                     </form>
                 </div>
