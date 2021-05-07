@@ -1,3 +1,5 @@
+const fs   = require('fs')
+
 // 缓存以读取的文件内容
 let fileCaches = {}
 
@@ -54,8 +56,7 @@ function getClientIp(req) {
 /*
  * 格式化时间
  */
-function formatTime() {
-    let date = new Date()
+function formatTime(date) {
     return date.getFullYear() + '-'
         + (date.getMonth() + 1) + '-'
         + date.getDate() + ' '
@@ -81,7 +82,7 @@ function getMimeType(file) {
 /*
  * 读取文件内容
  */
-function readFile(fs, fileName, useCache) {
+function readFile(fileName, useCache) {
     if(fileCaches.hasOwnProperty(fileName)) {
         return fileCaches[fileName]
     }
@@ -92,8 +93,17 @@ function readFile(fs, fileName, useCache) {
     return content
 }
 
+/*
+ * 登录检测
+ */
+function checkLogin(user, query) {
+    return user.username === query.username
+    && user.password === query.password
+}
+
 exports.color       = color
 exports.readFile    = readFile
 exports.formatTime  = formatTime
 exports.getClientIp = getClientIp
 exports.getMimeType = getMimeType
+exports.checkLogin  = checkLogin

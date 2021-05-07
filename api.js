@@ -1,14 +1,11 @@
 const fs   = require('fs')
 const os   = require('os')
 
-let urls   = require('./data/urls.js')
-let user   = require('./data/user.js')
-let config = require('./data/config.js')
+const tools = require('./tools.js')
+let urls    = require('./data/urls.js')
+let user    = require('./data/user.js')
+let config  = require('./data/config.js')
 
-function checkLogin(query) {
-    return user.username === query.username
-    && user.password === query.password
-}
 
 const api = [
 {
@@ -17,7 +14,7 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
-        let auth = checkLogin(query)
+        let auth = tools.checkLogin(user, query)
         res.end(
             JSON.stringify({
                 code: auth ? 0 : -1,
@@ -53,7 +50,7 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
-        let auth = checkLogin(query)
+        let auth = tools.checkLogin(user, query)
         if (!auth) {
             res.end(
                 JSON.stringify({
@@ -101,7 +98,7 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
-        let auth = checkLogin(query)
+        let auth = tools.checkLogin(user, query)
         if (!auth) {
             res.end(
                 JSON.stringify({
@@ -136,17 +133,17 @@ const api = [
         const nws = os.networkInterfaces()
         for(let k in nws) {
             if( list.includes(k.toLowerCase()) ) {
-                ip.push(nws[k][1].address)
+                ip.push(nws[k][ os.platform === 'linux' ? 0 : 1 ].address)
             }
         }
         const data = {
             '主机名': os.hostname(),
-            '内存': ((os.totalmem() - os.freemem()) / 1024 / 1024 / 1024).toFixed(2) + 'GB / ' + (os.totalmem() / 1024 / 1024 / 1024).toFixed(2) + 'GB',
-            'CPU': '(' + os.cpus().length + ') @ ' + (os.cpus()[0].speed / 1024).toFixed(2) + 'GHz',
             '版本': os.version(),
             '平台': os.type() + ' ' + os.arch(),
+            '内存': ((os.totalmem() - os.freemem()) / 1024 / 1024 / 1024).toFixed(2) + 'GB / ' + (os.totalmem() / 1024 / 1024 / 1024).toFixed(2) + 'GB',
+            'CPU': '(' + os.cpus().length + ') @ ' + (os.cpus()[0].speed / 1024).toFixed(2) + 'GHz',
+            'IP': ip.join(' '),
             '负载': os.loadavg().join(' '),
-            'IP': ip.join(' ')
         }
         res.end(
             JSON.stringify({
@@ -165,7 +162,7 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
-        let auth = checkLogin(query)
+        let auth = tools.checkLogin(user, query)
         if (!auth) {
             res.end(
                 JSON.stringify({
@@ -230,7 +227,7 @@ const api = [
         res.writeHeader(200, {
             "Content-Type" : "application/json"
         })
-        let auth = checkLogin(query)
+        let auth = tools.checkLogin(user, query)
         if (!auth) {
             res.end(
                 JSON.stringify({

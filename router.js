@@ -47,7 +47,7 @@ function router(req, res) {
         res.writeHeader(200, {
             "Content-Type" : fileMime
         })
-        res.end(tools.readFile(fs, fileName, useCache))
+        res.end(tools.readFile(fileName, useCache))
     })
 }
 

@@ -1,7 +1,7 @@
 const http   = require('http')
 
-const router = require('./router.js')
 const tools  = require('./tools.js')
+const router = require('./router.js')
 
 const host   = '0.0.0.0'
 const port   = 80
@@ -10,7 +10,7 @@ let   index  = 0
 const server = http.createServer(function(req, res) {
     let id   = tools.color('magenta', ++index)
     let ip   = tools.color('green',   tools.getClientIp(req))
-    let time = tools.color('yellow',  tools.formatTime())
+    let time = tools.color('yellow',  tools.formatTime(new Date()))
     console.log(`[${id}] [${ip}] [${time}] `, req.url)
     router(req, res)
 })
