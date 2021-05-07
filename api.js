@@ -133,7 +133,7 @@ const api = [
         const nws = os.networkInterfaces()
         for(let k in nws) {
             if( list.includes(k.toLowerCase()) ) {
-                ip.push(nws[k][ os.platform === 'linux' ? 0 : 1 ].address)
+                ip.push(nws[k][ os.platform == 'linux' ? 0 : 1 ].address)
             }
         }
         const data = {
