@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Loading...</title>
     <link rel="icon" type="image/png" sizes="32x32" href="img/favico-32x32.png">
     <link rel="stylesheet" href="css/style.css">
@@ -49,16 +49,16 @@
                 <a class="add" :href="'#/home/edit?id=' + urls.urls.length"></a>
                 <div v-for="c in urls.category" class="cell" v-if="urls.urls.length != 0">
                     <div class="title">{{ c.name }}</div>
-                    <ul>
-                        <li v-for="url, index in urls.urls" v-if="url.category == c.id">
+                    <ul ref="drag-ul">
+                        <li class="drag-li" :data-index="url.id"  v-for="url, index in urls.urls" v-if="url.category == c.id">
                             <a :target="url.url.startsWith('#') ? '' : '_blank'" :href="url.url">
-                                <img class="icon" :src="url.icon" alt="">
-                                <div class="title">{{ url.name }}</div>
-                                <div class="desp">{{ url.desp }}</div>
+                                <img draggable="false" class="icon" :src="url.icon">
+                                <div draggable="false" class="title">{{ url.name }}</div>
+                                <div draggable="false" class="desp">{{ url.desp }}</div>
                                 <div class="action">
                                     <template v-if="user.status == 1">
-                                        <a class="url" :href="'#/home/del?id=' + index">删除</a>
-                                        <a class="url" :href="'#/home/edit?id=' + index">编辑</a>
+                                        <a draggable="false" class="url" :href="'#/home/del?id=' + index">删除</a>
+                                        <a draggable="false" class="url" :href="'#/home/edit?id=' + index">编辑</a>
                                     </template>
                                 </div>
                             </a>
@@ -116,7 +116,7 @@
                     <input v-model="config_editor.title" type="text">
                     <div class="title">版权信息</div>
                     <input v-model="config_editor.copyright" type="text">
-                    <div class="save" @click="setConfig">保 存</div>
+                    <div class="save-edit" @click="setConfig">保 存</div>
                 </template>
             </div>
             <!-- 个人中心 -->
@@ -129,8 +129,8 @@
                 <input v-model="user_editor.username" type="text">
                 <div class="title">密码</div>
                 <input v-model="user_editor.password" type="password">
-                <div class="save" @click="setUser">保 存</div>
-                <div class="logout" @click="userLogout">退出登录</div>
+                <div class="save-edit" @click="setUser">保 存</div>
+                <div class="save-edit logout" @click="userLogout">退出登录</div>
             </div>
             <!-- 用户登录 -->
             <div class="login" v-else-if="route == '/login'">
@@ -138,8 +138,7 @@
                 <input type="text" v-model="user.username">
                 <div class="title">密码</div>
                 <input type="password" v-model="user.password">
-                <div @click="userLogin" class="login-submit">登 录</div>
-                <p v-if="!user.password">默认：admin admin</p>
+                <div @click="userLogin" class="save-edit">登 录</div>
             </div>
             <!-- 404 -->
             <div class="not-found" v-else>

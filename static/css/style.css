@@ -1,7 +1,6 @@
 body{
     color: #000;
     margin: 0;
-    font-family: 'Segoe UI',SegoeUI,'Microsoft JhengHei',微軟正黑體,"Helvetica Neue",Helvetica,Arial,sans-serif;
     background: #efeeee;
 }
 a {
@@ -10,6 +9,18 @@ a {
     -moz-user-focus: none;
     -moz-user-select: none;
 }
+.save-edit{
+    text-align: center;
+    background: #4d6bff;
+    line-height: 40px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 16px;
+}
+.save-edit:active{
+    background: #99a9f7;
+}
+
 #loading{
     text-align: center;
 }
@@ -25,6 +36,7 @@ a {
     display: flex;
     align-items: center;
     background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,.06);
 }
 .nav-logo{
     width: 46px;
@@ -68,7 +80,7 @@ a {
     cursor: pointer;
     font-size: 20px;
     padding: 0 8px;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 .user .user-username:hover{
     text-decoration: underline;
@@ -76,12 +88,14 @@ a {
 .user .user-avatar{
     width: 46px;
     height: 46px;
+    flex-shrink: 0;
     border: 1px solid #000;
     border-radius: 23px;
 }
 .user .user-avatar > img{
     width: 100%;
     border-radius: 100%;
+    box-sizing: border-box;
 }
 
 .route{
@@ -123,7 +137,7 @@ a {
     list-style: none;
     padding: 0;
     margin: 0;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 .home ul li > a{
@@ -157,6 +171,7 @@ a {
     font-weight: bold;
 }
 .home ul li .desp{
+    text-align: center;
     color: #9f9f9f;
     padding: 4px 0;
     font-size: 14px;
@@ -218,15 +233,6 @@ a {
     border-bottom: 1px solid #000;
     border-radius: 0;
 }
-.home .home-edit .form .save-edit{
-    text-align: center;
-    background: #4d6bff;
-    line-height: 40px;
-    color: #fff;
-    cursor: pointer;
-    margin-top: 16px;
-}
-
 .home .home-del .alert{
     padding: 8px;
     min-width: 200px;
@@ -278,14 +284,6 @@ a {
     border-radius: 0;
     background-color: transparent;
 }
-.login .login-submit{
-    margin-top: 32px;
-    text-align: center;
-    background: #4d6bff;
-    line-height: 40px;
-    color: #fff;
-    cursor: pointer;
-}
 .system{
     display: flex;
     flex-direction: column;
@@ -296,6 +294,10 @@ a {
 }
 .system table tr{
     background: #f8f8f8;
+}
+.system table tr > td{
+    word-wrap: break-word;
+    word-break: break-all;
 }
 .system table tr > td:first-child{
     white-space: nowrap;
@@ -319,14 +321,6 @@ a {
     font-weight: bold;
     padding-top: 16px;
 }
-.system .save{
-    margin-top: 32px;
-    text-align: center;
-    background: #4d6bff;
-    line-height: 40px;
-    color: #fff;
-    cursor: pointer;
-}
 .profile{
     display: flex;
     flex-direction: column;
@@ -342,15 +336,6 @@ a {
     outline: none;
     border-bottom: 1px solid #000;
     border-radius: 0;
-}
-.profile .logout,
-.profile .save{
-    margin-top: 16px;
-    text-align: center;
-    background: #4d6bff;
-    line-height: 40px;
-    color: #fff;
-    cursor: pointer;
 }
 .profile .logout{
     color: red;
@@ -374,7 +359,7 @@ a {
     justify-content: center;
     align-items: center;
     position: fixed;
-    top: 50px;
+    top: 110px;
     left: 50%;
     z-index: 99999;
     padding: 8px 16px;
@@ -463,5 +448,8 @@ a {
     .profile,
     .login{
         max-width: 100%;
+    }
+    .message{
+        top: 80px;
     }
 }

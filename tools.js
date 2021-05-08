@@ -88,7 +88,7 @@ function readFile(fileName, useCache) {
         return fileCaches[fileName]
     }
     let content = fs.readFileSync(fileName)
-    if (false) {
+    if (!useCache) {
         fileCaches[fileName] = content
     }
     return content
@@ -102,6 +102,18 @@ function checkLogin(user, query) {
     && user.password === query.password
 }
 
+/*
+ * 获取CPU温度
+ */
+function temp() {
+    try{
+        return fs.readFileSync('cat /etc/armbianmonitor/datasources/soctemp') / 1000
+    }catch(e) {
+        return 'Unknow'
+    }
+}
+
+exports.temp        = temp
 exports.color       = color
 exports.readFile    = readFile
 exports.formatTime  = formatTime

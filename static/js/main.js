@@ -17,6 +17,17 @@ function deepCopy(obj){
     return objClone;
 } 
 
+function _index(el) {
+    let index = 0;
+    if (!el || !el.parentNode) {
+        return -1;
+    }
+    while (el && (el = el.previousElementSibling)) {
+        index++;
+    }
+    return index;
+}
+
 const app = new Vue({
     el: '#app',
     data: {
@@ -32,9 +43,9 @@ const app = new Vue({
         // 用户状态
         user: {
             status: 0,
-            username: '',
-            password: '',
-            nickname: '未登录',
+            username: 'admin',
+            password: 'admin',
+            nickname: '游客',
             avatar: 'img/avatar-default.png'
         },
         // 个人信息框的值
@@ -87,7 +98,7 @@ const app = new Vue({
                     this.user_editor = deepCopy(this.user)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
                     console.log('登录成功')
-                    this.showMessage(0, '登录成功,欢迎你' + this.user.nickname)
+                    this.showMessage(0, '欢迎你 ' + this.user.nickname + ' !')
                     this.redirectTo('/home')
                     return
                 }
@@ -142,6 +153,7 @@ const app = new Vue({
                 if(res.data.code == 0) {
                     this.urls = res.data.data
                     window.localStorage.setItem('urls', JSON.stringify(res.data.data))
+                    this.addDragListener()
                 }
                 console.log(res.data.msg)
             })
@@ -173,6 +185,19 @@ const app = new Vue({
                 this.showMessage(-1, '删除失败:' + err)
             })
         },
+        sortUrl(a, b) {
+            axios.get(`/sortUrl?username=${this.user.username}&password=${this.user.password}&a=${a}&b=${b}`)
+            .then(res => {
+                if(res.data.code == 0) {
+                    this.showMessage(0, res.data.msg)
+                    this.getUrls()
+                    return
+                }
+                this.showMessage(-1, res.data.msg)
+            }).catch(err => {
+                this.showMessage(-1, '排序失败:' + err)
+            })
+        },
         getConfig() {
             axios.get('/getConfig')
             .then(res => {
@@ -180,6 +205,8 @@ const app = new Vue({
                     this.config = res.data.data
                     this.config_editor = deepCopy(this.config)
                     window.localStorage.setItem('config', JSON.stringify(res.data.data))
+                    // 设置标题
+                    document.title = this.config.title
                     return
                 }
                 this.showMessage(-1, res.data.msg)
@@ -234,6 +261,47 @@ const app = new Vue({
                     content: ''
                 })
             }, 3000)
+        },
+        addDragListener() {
+            let draging_el = undefined
+            let target_el = undefined
+            this.$refs['drag-ul'].forEach(ul => {
+                ul.ondragstart = (e) => {
+                    e.dataTransfer.setData("te", e.target.innerText)
+                    draging_el = e.target
+                    let i = 3
+                    while(draging_el.className != 'drag-li' && i-- > 0) {
+                        console.log('寻找')
+                        draging_el = draging_el.parentNode
+                    }
+                    // console.log(draging_el)
+                }
+                ul.ondragover = (e) => {
+                    e.preventDefault()
+                    var target = e.target
+                    let i = 3
+                    while(target.className != 'drag-li' && i-- > 0) {
+                        target = target.parentNode
+                    }
+                    target_el = target
+                    // console.log(target_el)
+                }
+                ul.ondragend = (e) => {
+                    if(target_el && target_el !== draging_el && target_el.className == 'drag-li') {
+                        // console.log(draging_el)
+                        // console.log(target_el)
+                        let a = draging_el.dataset.index
+                        let b = target_el.dataset.index
+                        console.log('   进行排序', a, b)
+                        if(this.user.status == 0) {
+                            this.showMessage(-1, '请先登录')
+                            this.redirectTo('/login')
+                            return
+                        }
+                        this.sortUrl(a, b)
+                    }
+                } 
+            })
         },
         updateView() {
             let hash = window.location.hash;
@@ -301,7 +369,6 @@ const app = new Vue({
         if (user) {
             this.user = JSON.parse(user)
             this.user_editor = deepCopy(this.user)
-            this.showMessage(0, '欢迎你，' + this.user.nickname)
         }
         if(urls) {
             this.urls = JSON.parse(urls)
@@ -312,6 +379,8 @@ const app = new Vue({
         this.config_editor = deepCopy(this.config)
         // 设置标题
         document.title = this.config.title
+        // 欢迎信息
+        this.showMessage(0, '欢迎你，' + this.user.nickname + '！')
         this.updateView()
         // 路由
         window.onhashchange = () => {

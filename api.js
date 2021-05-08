@@ -92,6 +92,40 @@ const api = [
     }
 },
 {
+    // 两个导航互换位置
+    url: '/sortUrl',
+    handler: (req, res, query) => {
+        res.writeHeader(200, {
+            "Content-Type" : "application/json"
+        })
+        let auth = tools.checkLogin(user, query)
+        if (!auth) {
+            res.end(
+                JSON.stringify({
+                    code: -1,
+                    msg: '您没有权限，请重新登录！'
+                })
+            )
+            return
+        }
+        let id_a = query.a
+        let id_b = query.b
+        let tmp = urls.urls[id_a]
+        urls.urls[id_a] = urls.urls[id_b]
+        urls.urls[id_b] = tmp
+        urls.urls[id_a].id = id_a
+        urls.urls[id_b].id = id_b
+        fs.writeFileSync('./data/urls.js', 'module.exports = ' + JSON.stringify(urls))
+        res.end(
+            JSON.stringify({
+                code: 0,
+                msg: '排序成功',
+                data: urls
+            })
+        )
+    }
+},
+{
     // 删除导航
     url: '/delUrl',
     handler: (req, res, query) => {
@@ -133,7 +167,11 @@ const api = [
         const nws = os.networkInterfaces()
         for(let k in nws) {
             if( list.includes(k.toLowerCase()) ) {
-                ip.push(nws[k][ os.platform == 'linux' ? 0 : 1 ].address)
+                for(let i in nws[k]) {
+                    if (nws[k][i].family == 'IPv4') {
+                        ip.push(nws[k][i].address)
+                    }
+                }
             }
         }
         const data = {
@@ -142,6 +180,7 @@ const api = [
             '平台': os.type() + ' ' + os.arch(),
             '内存': ((os.totalmem() - os.freemem()) / 1024 / 1024 / 1024).toFixed(2) + 'GB / ' + (os.totalmem() / 1024 / 1024 / 1024).toFixed(2) + 'GB',
             'CPU': '(' + os.cpus().length + ') @ ' + (os.cpus()[0].speed / 1024).toFixed(2) + 'GHz',
+            '温度': tools.temp() + '°C',
             'IP': ip.join(' '),
             '负载': os.loadavg().join(' '),
         }
