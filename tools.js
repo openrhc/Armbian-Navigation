@@ -107,7 +107,7 @@ function checkLogin(user, query) {
  */
 function temp() {
     try{
-        return fs.readFileSync('cat /etc/armbianmonitor/datasources/soctemp') / 1000
+        return fs.readFileSync('/etc/armbianmonitor/datasources/soctemp') / 1000
     }catch(e) {
         return 'Unknow'
     }
