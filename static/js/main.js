@@ -61,6 +61,13 @@ const app = new Vue({
             url: '',
             icon: '',
             category: '1'
+        },
+        // 提示信息
+        message: {
+            status: 0,
+            type: '',
+            content: '',
+            timer: undefined
         }
 
     },
@@ -70,7 +77,7 @@ const app = new Vue({
         },
         userLogin() {
             if(!this.user.username || !this.user.password) {
-                alert('请填写 [用户名] [密码]')
+                this.showMessage(-1, '请填写 [用户名] [密码]')
                 return
             }
             axios.get(`/login?username=${this.user.username}&password=${this.user.password}`)
@@ -79,13 +86,14 @@ const app = new Vue({
                     this.user = res.data.data
                     this.user_editor = deepCopy(this.user)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
-                    this.redirectTo('/home')
                     console.log('登录成功')
+                    this.showMessage(0, '登录成功,欢迎你' + this.user.nickname)
+                    this.redirectTo('/home')
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('登录失败' + err)
+                this.showMessage(-1, '登录失败:' + err)
             })
         },
         userLogout() {
@@ -99,11 +107,12 @@ const app = new Vue({
             }
             this.user_editor = deepCopy(this.user)
             console.log('退出登录')
+            this.showMessage(0, '退出登录')
             this.redirectTo('/login')
         },
         checkEdit() {
             if(!this.editor.name || !this.editor.url ) {
-                alert('请填写 [名称] [URL]')
+                this.showMessage(-1, '请填写 [名称] [URL]')
                 return
             }
             let id = this.editor.id
@@ -141,25 +150,27 @@ const app = new Vue({
             axios.post(`/setUrl?username=${this.user.username}&password=${this.user.password}`, this.editor)
             .then(res => {
                 if(res.data.code == 0) {
-                    this.redirectTo('/home')
                     console.log('   save:', this.editor.id)
+                    this.showMessage(0, res.data.msg)
+                    this.redirectTo('/home')
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('保存失败' + err)
+                this.showMessage(-1, '保存失败:' + err)
             })
         },
         delUrl() {
             axios.get(`/delUrl?username=${this.user.username}&password=${this.user.password}&id=${this.editor.id}`)
             .then(res => {
                 if(res.data.code == 0) {
+                    this.showMessage(0, res.data.msg)
                     this.redirectTo('/home')
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('删除失败' + err)
+                this.showMessage(-1, '删除失败:' + err)
             })
         },
         getConfig() {
@@ -171,9 +182,9 @@ const app = new Vue({
                     window.localStorage.setItem('config', JSON.stringify(res.data.data))
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('获取网站配置失败' + err)
+                this.showMessage(-1, '获取网站配置失败:' + err)
             })
         },
         setConfig() {
@@ -183,17 +194,17 @@ const app = new Vue({
                     this.config = deepCopy(this.config_editor)
                     document.title = this.config.title
                     window.localStorage.setItem('config', JSON.stringify(this.config))
-                    alert('更新成功')
+                    this.showMessage(0, '更新成功')
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('更新失败' + err)
+                this.showMessage(-1, '更新失败:' + err)
             })
         },
         setUser() {
             if (!this.user_editor.username || !this.user_editor.password) {
-                alert('请填写 [用户名] [密码]')
+                this.showMessage(-1, '请填写 [用户名] [密码]')
                 return
             }
             axios.post(`/setUser?username=${this.user.username}&password=${this.user.password}`, this.user_editor)
@@ -201,13 +212,28 @@ const app = new Vue({
                 if(res.data.code == 0) {
                     this.user = deepCopy(this.user_editor)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
-                    alert('更新成功')
+                    this.showMessage(0, '更新成功')
                     return
                 }
-                alert(res.data.msg)
+                this.showMessage(-1, res.data.msg)
             }).catch(err => {
-                alert('更新失败' + err)
+                this.showMessage(-1, '更新失败' + err)
             })
+        },
+        showMessage(type, content) {
+            clearTimeout(this.message.timer)
+            Object.assign(this.message, {
+                status: 1,
+                type: type,
+                content: content
+            })
+            this.message.timer = setTimeout(() => {
+                Object.assign(this.message, {
+                    status: 0,
+                    type: 0,
+                    content: ''
+                })
+            }, 3000)
         },
         updateView() {
             let hash = window.location.hash;
@@ -225,6 +251,7 @@ const app = new Vue({
             }
             if (this.route.startsWith('/home/del?id=')) {
                 if(this.user.status == 0) {
+                    this.showMessage(-1, '请先登录')
                     this.redirectTo('/login')
                     return
                 }
@@ -234,6 +261,7 @@ const app = new Vue({
             }
             if (this.route.startsWith('/home/edit?id=')) {
                 if(this.user.status == 0) {
+                    this.showMessage(-1, '请先登录')
                     this.redirectTo('/login')
                     return
                 }
@@ -273,6 +301,7 @@ const app = new Vue({
         if (user) {
             this.user = JSON.parse(user)
             this.user_editor = deepCopy(this.user)
+            this.showMessage(0, '欢迎你，' + this.user.nickname)
         }
         if(urls) {
             this.urls = JSON.parse(urls)

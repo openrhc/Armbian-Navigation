@@ -151,6 +151,11 @@
         </div>
         <!-- 版权申明 -->
         <div v-html="config.copyright" class="copyright"></div>
+        <!-- 消息提示 -->
+        <div class="message" v-if="message.status == 1">
+            <div class="icon" :class="message.type == 0 ? 'success' : 'fail'"></div>
+            <div class="content">{{ message.content }}</div>
+        </div>
     </div>
     <script src="js/main.js"></script>
 </body>

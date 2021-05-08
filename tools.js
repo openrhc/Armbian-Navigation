@@ -6,6 +6,7 @@ let fileCaches = {}
 // 常用MIME
 const MIME = {
     text : 'text/plain',
+    htm : 'text/html',
     html : 'text/html',
     jpg  : 'image/jpeg',
     png  : 'image/png',

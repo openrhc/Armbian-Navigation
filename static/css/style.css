@@ -369,6 +369,42 @@ a {
     margin: 16px;
 }
 
+.message{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    z-index: 99999;
+    padding: 8px 16px;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+    border-radius: 40px;
+    /*border: 1px solid #000;*/
+}
+.message .content{
+    font-size: 18px;
+    margin-left: 8px;
+    /*background: blue;*/
+    flex-grow: 1;
+    white-space: nowrap;
+}
+.message .icon{
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.message .success{
+    background-image: url('../img/success.png');
+}
+.message .fail{
+    background-image: url('../img/fail.png');
+}
+
 /*自适应代码*/
 @media screen and (max-width: 768px) {
     .nav{
