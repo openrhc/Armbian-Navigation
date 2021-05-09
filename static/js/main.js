@@ -53,9 +53,12 @@ const app = new Vue({
         // 系统信息
         sys: {
             "主机名": "loading",
-            "内存": "loading",
             "版本": "loading",
             "平台": "loading",
+            "内存": "loading",
+            "CPU": "loading",
+            "温度": "loading",
+            "IP": "loading",
             "负载": 'loading'
         },
         // 导航列表及类别
@@ -98,7 +101,7 @@ const app = new Vue({
                     this.user_editor = deepCopy(this.user)
                     window.localStorage.setItem('user', JSON.stringify(this.user))
                     console.log('登录成功')
-                    this.showMessage(0, '欢迎你 ' + this.user.nickname + ' !')
+                    this.showMessage(0, '欢迎你，' + this.user.nickname + '！')
                     this.redirectTo('/home')
                     return
                 }
@@ -369,6 +372,9 @@ const app = new Vue({
         if (user) {
             this.user = JSON.parse(user)
             this.user_editor = deepCopy(this.user)
+            this.userLogin()
+        }else{
+            this.showMessage(0, '欢迎你，' + this.user.nickname + '！')
         }
         if(urls) {
             this.urls = JSON.parse(urls)
@@ -379,8 +385,6 @@ const app = new Vue({
         this.config_editor = deepCopy(this.config)
         // 设置标题
         document.title = this.config.title
-        // 欢迎信息
-        this.showMessage(0, '欢迎你，' + this.user.nickname + '！')
         this.updateView()
         // 路由
         window.onhashchange = () => {
