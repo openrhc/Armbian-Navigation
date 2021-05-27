@@ -13,7 +13,7 @@ let file = ''
 let temp = 0
 
 if(debug) {
-    file = `E:\\NodejsProject\\Armbian-Navigation\\static\\tempdata\\${name}`
+    file = `E:\\NodejsProject\\Armbian-Navigation\\static\\tempdata\\test.js`
     temp = 38
 }else{
     // 改为自己的路径
