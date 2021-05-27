@@ -27,5 +27,5 @@ server.listen(port, host, () => {
                           |___/                         
      GitHub: https://github.com/openrhc/Armbian-Navigation
     `))
-    console.log('Server running at', tools.color('green', `http://${host}:${port}/`))
+    console.log('Server running at', tools.color('green', `http://localhost:${port}/`))
 });

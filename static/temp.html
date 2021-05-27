@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>温度监控</title>
+    <style>
+        #main{
+            width: 100%;
+            height: 600px;
+            margin: 16px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script src="js/echarts.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <script>
+
+        var date = new Date()
+        var year = date.getFullYear()
+        var month = date.getMonth() + 1
+        var date_ = date.getDate()
+
+        var name = `${year}-${month}-${date_}.js`
+
+        axios.get(`tempdata/${name}`).then(res => {
+            console.log(res.data)
+            var time = []
+            for(var i = 0; i < 24; i++) {
+                time.push(i)
+            }
+
+            var myChart = echarts.init(document.getElementById('main'))
+            var option = {
+                title: {
+                    text: 'Armbian - 24小时温度统计图'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: time
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: res.data,
+                    type: 'line'
+                }]
+            }
+
+            myChart.setOption(option)
+        }).catch(err => {
+            alert(err)
+        })
+
+    </script>
+</body>
+</html>
