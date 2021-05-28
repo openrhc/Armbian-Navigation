@@ -84,14 +84,17 @@ const app = new Vue({
             timer: undefined
         },
         // 温度图标ID
-        temp_id: 'tempEchart'
+        temp_id: 'tempEchart',
+        myChart: undefined
 
     },
     methods: {
         getTemp() {
+            console.log(this.myChart)
             axios.get('/getTemp').then(res => {
                 if(res.data.code == 0) {
-                    let myChart = echarts.init(document.getElementById(this.temp_id))
+
+                    this.myChart = echarts.init(document.getElementById(this.temp_id))
                     let option = {
                         xAxis: {
                             type: 'category',
@@ -105,7 +108,7 @@ const app = new Vue({
                             type: 'line'
                         }]
                     }
-                    myChart.setOption(option)
+                    this.myChart.setOption(option)
                     return
                 }
                 this.showMessage(-1, res.data.msg)
