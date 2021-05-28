@@ -82,10 +82,37 @@ const app = new Vue({
             type: '',
             content: '',
             timer: undefined
-        }
+        },
+        // 温度图标ID
+        temp_id: 'tempEchart'
 
     },
     methods: {
+        getTemp() {
+            axios.get('/getTemp').then(res => {
+                if(res.data.code == 0) {
+                    let myChart = echarts.init(document.getElementById(this.temp_id))
+                    let option = {
+                        xAxis: {
+                            type: 'category',
+                            data: res.data.data.time
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: res.data.data.value,
+                            type: 'line'
+                        }]
+                    }
+                    myChart.setOption(option)
+                    return
+                }
+                this.showMessage(-1, res.data.msg)
+            }).catch(err => {
+                this.showMessage(-1, '获取温度失败' + err)
+            })
+        },
         checkUserView() {
             this.redirectTo(this.user.status === 0 ? '/login' : '/profile')
         },
@@ -319,6 +346,9 @@ const app = new Vue({
             }
             if(this.route === '/system') {
                 this.getSys()
+            }
+            if(this.route === '/temp') {
+                this.getTemp()
             }
             if (this.route.startsWith('/home/del?id=')) {
                 if(this.user.status == 0) {

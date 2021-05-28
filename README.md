@@ -36,13 +36,6 @@ cd Armbian-Navigation
 node main.js
 ```
 
-## 增加温度监控说明
-编辑你的cron文件，增加如下内容，路径按需替换
-```bash
-0 */1 * * * /usr/local/bin/node /root/Armbian-Navigation/CronScript/temp.js > /dev/null 2>&1
-```
-然后访问/temp.html页面
-
 ### 目录说明
 
     ├── LICENSE

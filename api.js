@@ -6,6 +6,33 @@ let urls    = require('./data/urls.js')
 let user    = require('./data/user.js')
 let config  = require('./data/config.js')
 
+// 存放温度列表
+let temp = {
+    time: [],
+    value: []
+}
+
+// 获取温度并添加到列表
+function setTemp() {
+    let date = new Date()
+    let h = date.getHours()
+    let m = date.getMinutes()
+    let t = tools.temp()
+    // console.log('当前温度', `${h}:${m}`, t)
+    temp.time.push(`${h}:${m}`)
+    temp.value.push(t)
+    if(temp.time.length > 5) {
+        temp.time.shift()
+        temp.value.shift()
+    }
+}
+
+// 监控温度
+setInterval(() => {
+    setTemp()
+}, 5 * 60 * 1000)
+
+setTemp()
 
 const api = [
 {
@@ -307,6 +334,23 @@ const api = [
         })
     }
 },
+{
+    // 获取温度
+    url: '/getTemp',
+    handler: (req, res, query) => {
+        res.writeHeader(200, {
+            "Content-Type" : "application/json"
+        })
+        res.end(
+            JSON.stringify({
+                code: 0,
+                msg: '获取成功',
+                data: temp
+            })
+        )
+        // console.table(temp)
+    }
+}
 ]
 
 module.exports = api

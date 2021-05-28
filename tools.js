@@ -109,7 +109,7 @@ function temp() {
     try{
         return fs.readFileSync('/etc/armbianmonitor/datasources/soctemp') / 1000
     }catch(e) {
-        return 'Unknow'
+        return 0
     }
 }
 
